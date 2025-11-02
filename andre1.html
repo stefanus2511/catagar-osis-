@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Pelanggaran Siswa</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #001f3f, #003366);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ======== NAVBAR MINIMALIS ======== */
+    .navbar {
+      width: 100%;
+      background: rgba(0, 31, 63, 0.95);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .navbar h2 {
+      margin: 0;
+      font-size: 1.1em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ======== MENU TOGGLE ======== */
+    .menu-toggle {
+      font-size: 26px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-toggle.active {
+      transform: rotate(90deg);
+    }
+
+    /* ======== MENU DROPDOWN ======== */
+    .menu {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: rgba(0, 31, 63, 0.98);
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      display: none;
+      flex-direction: column;
+      width: 180px;
+      overflow: hidden;
+      animation: slideDown 0.3s ease;
+    }
+
+    .menu a {
+      color: #fff;
+      padding: 12px 15px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background 0.3s ease;
+    }
+
+    .menu a:last-child {
+      border-bottom: none;
+    }
+
+    .menu a:hover {
+      background: #003366;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ======== FORM CONTAINER ======== */
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      color: #001f3f;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      margin-top: 40px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #001f3f;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .progress span {
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      line-height: 25px;
+      text-align: center;
+      border-radius: 50%;
+      background: #ccc;
+      color: white;
+      font-weight: bold;
+      margin: 0 10px;
+      transition: all 0.4s ease;
+    }
+
+    .progress span.active {
+      background: #001f3f;
+      transform: scale(1.2);
+    }
+
+    .step {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .step.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      margin-bottom: 20px;
+      transition: 0.3s;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border-color: #001f3f;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 31, 63, 0.3);
+    }
+
+    .btn {
+      background: #001f3f;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #003366;
+      transform: translateY(-2px);
+    }
+
+    .btn.secondary {
+      background: #888;
+    }
+
+    .btn.secondary:hover {
+      background: #666;
+    }
+
+    .nav-btns {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 600px) {
+      .navbar h2 {
+        font-size: 1em;
+      }
+      .menu {
+        right: 10px;
+        width: 160px;
+      }
+      .container {
+        margin-top: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ======== NAVBAR ======== -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="512.jpg" alt="Logo Anak SMP">
+      <h2>Pencatat Pelanggaran Siswa</h2>
+    </div>
+    <div class="menu-toggle" id="menuToggle">☰</div>
+    <div class="menu" id="menu">
+      <a href="#">Masukan Pelanggaran</a>
+      <a href="#">Lihat Daftar</a>
+    </div>
+  </nav>
+
+  <!-- ======== FORM CONTAINER ======== -->
+  <div class="container">
+    <h1>Input Pelanggaran</h1>
+    <div class="progress">
+      <span id="p1" class="active">1</span>
+      <span id="p2">2</span>
+      <span id="p3">3</span>
+      <span id="p4">4</span>
+    </div>
+
+    <form id="violationForm">
+      <div id="step-1" class="step active">
+        <label for="classSelect">Pilih Kelas:</label>
+        <select id="classSelect" required>
+          <option value="">-- Pilih Kelas --</option>
+        </select>
+        <div class="nav-btns">
+          <button type="button" class="btn" id="next1">Next</button>
+        </div>
+      </div>
+
+      <div id="step-2" class="step">
+        <label for="studentSelect">Pilih Siswa:</label>
+        <select id="studentSelect" required>
+          <option value="">-- Pilih Siswa --</option>
+        </select>
+        <div class="nav-btns">
+          <button type="button" class="btn secondary" id="prev2">Previous</button>
+          <button type="button" class="btn" id="next2">Next</button>
+        </div>
+      </div>
+
+      <div id="step-3" class="step">
+        <label for="violationDate">Tanggal Pelanggaran:</label>
+        <input type="date" id="violationDate" required>
+        <div class="nav-btns">
+          <button type="button" class="btn secondary" id="prev3">Previous</button>
+          <button type="button" class="btn" id="next3">Next</button>
+        </div>
+      </div>
+
+      <div id="step-4" class="step">
+        <label for="violation">Deskripsi Pelanggaran:</label>
+        <textarea id="violation" rows="4" required></textarea>
+        <div class="nav-btns">
+          <button type="button" class="btn secondary" id="prev4">Previous</button>
+          <button type="submit" class="btn">Simpan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBmydfk1xVp4WsTtypy5rZCKWKpGNC72Ro",
+    authDomain: "pelanggaran-update.firebaseapp.com",
+    projectId: "pelanggaran-update",
+    storageBucket: "pelanggaran-update.appspot.com",
+    messagingSenderId: "165344570675",
+    appId: "1:165344570675:web:384d27c299e7dc7deba246",
+    measurementId: "G-QXRDJLR2SR"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let currentStep = 1;
+  let studentData = [];
+
+  function showStep(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step-${step}`).classList.add('active');
+    document.querySelectorAll('.progress span').forEach((s, i) => {
+      s.classList.toggle('active', i + 1 === step);
+    });
+  }
+
+  // 🔧 Fungsi untuk mengurutkan kelas 7A–9H secara alami
+  function sortClassesNaturally(a, b) {
+    const [gradeA, letterA] = [parseInt(a), a.replace(/[0-9]/g, '')];
+    const [gradeB, letterB] = [parseInt(b), b.replace(/[0-9]/g, '')];
+    if (gradeA !== gradeB) return gradeA - gradeB;
+    return letterA.localeCompare(letterB);
+  }
+
+  // 🔧 Muat data kelas dan siswa dari Firestore
+  async function loadClasses() {
+    const classSelect = document.getElementById('classSelect');
+    const querySnapshot = await getDocs(collection(db, 'students'));
+    studentData = querySnapshot.docs.map(doc => doc.data());
+
+    // Urutkan siswa dulu biar rapi berdasarkan kelas lalu nama
+    studentData.sort((a, b) => {
+      const classOrder = sortClassesNaturally(a.class, b.class);
+      if (classOrder !== 0) return classOrder;
+      return a.name.localeCompare(b.name);
+    });
+
+    // Ambil semua kelas unik dan urutkan 7A–9H
+    const classes = [...new Set(studentData.map(s => s.class))].sort(sortClassesNaturally);
+
+    // Tambahkan ke dropdown kelas
+    classes.forEach(cls => {
+      const option = document.createElement('option');
+      option.value = cls;
+      option.textContent = cls;
+      classSelect.appendChild(option);
+    });
+  }
+
+  // 🔧 Saat kelas dipilih, tampilkan siswa yang sesuai dan urutkan nama A–Z
+  document.getElementById('classSelect').addEventListener('change', function() {
+    const cls = this.value;
+    const studentSelect = document.getElementById('studentSelect');
+    studentSelect.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+
+    const filtered = studentData
+      .filter(s => s.class === cls)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    filtered.forEach(s => {
+      const option = document.createElement('option');
+      option.value = s.name;
+      option.textContent = s.name;
+      studentSelect.appendChild(option);
+    });
+  });
+
+  // 🔧 Navigasi antar langkah
+  document.getElementById('next1').addEventListener('click', () => {
+    if (!document.getElementById('classSelect').value)
+      return Swal.fire('Peringatan', 'Pilih kelas terlebih dahulu!', 'warning');
+    currentStep = 2;
+    showStep(currentStep);
+  });
+
+  document.getElementById('next2').addEventListener('click', () => {
+    if (!document.getElementById('studentSelect').value)
+      return Swal.fire('Peringatan', 'Pilih siswa terlebih dahulu!', 'warning');
+    currentStep = 3;
+    showStep(currentStep);
+  });
+
+  document.getElementById('next3').addEventListener('click', () => {
+    if (!document.getElementById('violationDate').value)
+      return Swal.fire('Peringatan', 'Isi tanggal pelanggaran!', 'warning');
+    currentStep = 4;
+    showStep(currentStep);
+  });
+
+  document.getElementById('prev2').addEventListener('click', () => { currentStep = 1; showStep(currentStep); });
+  document.getElementById('prev3').addEventListener('click', () => { currentStep = 2; showStep(currentStep); });
+  document.getElementById('prev4').addEventListener('click', () => { currentStep = 3; showStep(currentStep); });
+
+  // 🔧 Simpan data pelanggaran ke Firestore
+  document.getElementById('violationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const cls = document.getElementById('classSelect').value;
+    const student = document.getElementById('studentSelect').value;
+    const date = document.getElementById('violationDate').value;
+    const violation = document.getElementById('violation').value;
+
+    await addDoc(collection(db, 'violations'), { class: cls, student, violation, date });
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Data Tersimpan!',
+      html: `<b>${student}</b> (${cls})<br>${violation}<br><i>${date}</i>`,
+      showConfirmButton: false,
+      timer: 2500
+    });
+
+    this.reset();
+    currentStep = 1;
+    showStep(currentStep);
+    document.getElementById('studentSelect').innerHTML = '<option value="">-- Pilih Siswa --</option>';
+    document.getElementById('violationDate').valueAsDate = new Date();
+  });
+
+  // 🔧 Set tanggal default & muat kelas
+  document.getElementById('violationDate').valueAsDate = new Date();
+  loadClasses();
+
+  // ======== NAVBAR TOGGLE ========
+  const menuToggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('menu');
+
+  menuToggle.addEventListener('click', () => {
+    menu.classList.toggle('show');
+    menuToggle.classList.toggle('active');
+    menu.style.display = menu.classList.contains('show') ? 'flex' : 'none';
+  });
+</script>
+</body>
+</html>
